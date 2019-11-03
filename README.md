@@ -12,39 +12,39 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### Components
+## Components
 
-## LocationsList and CategoriesList
+### LocationsList and CategoriesList
 
 Render the items details from the reducer and send to the `List` component.
 
-## LocationsForm and CategoriesForm
+### LocationsForm and CategoriesForm
 
 Render a from on `create` or `edit` mode. On edit mode the component get the item details by id.
 
-## LocationsView and CategoriesView
+### LocationsView and CategoriesView
 
 Render the item details by id.
 
-## List
+### List
 
 Get column title and rows data from `LocationsList` or `CategoriesList` and render the table.
 
-## Actions
+### Actions
 
 Render 3 buttons (Edit, View Details and Delete). Get Updated button Lists from `List` component.
 Manage Modal for the `Delete` button.
 
-### Reducer Dispath Actions
+## Reducer Dispath Actions
 
-## Add_Item
+### Add_Item
 
 Add new item for the localStorge (by type item - `categories` or `locations`)
 
-## Edit_Item
+### Edit_Item
 
 Filter the current item from the localStorge and create a new item with the new details and the same id.
 
-## Remove_Item
+### Remove_Item
 
 Filter the current item and update the localStorge without this item
