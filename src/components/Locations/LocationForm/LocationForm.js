@@ -121,7 +121,6 @@ function LocationForm(props) {
 
     setSumnit(true);
     let validation = handleValidation(values);
-
     if (validation.length === 0) {
       if (editMode) {
         props.onLocationEdited(values);
@@ -133,8 +132,8 @@ function LocationForm(props) {
             .substr(2, 12),
         });
       }
+      history.push("/locations");
     }
-    history.push("/locations");
   };
 
   // Handle Validation

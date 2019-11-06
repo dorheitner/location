@@ -47,7 +47,6 @@ const mapDispathToProps = dispath => {
 function Actions(props) {
   const classes = useStyles();
   const { history } = useReactRouter();
-  console.log("Actions");
   const [open, setOpen] = useState(false);
 
   // Handle Remove Item
