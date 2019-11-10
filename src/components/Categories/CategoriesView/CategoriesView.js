@@ -16,6 +16,12 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
+  "@media only screen and (max-width: 800px)": {
+    card: {
+      width: "100%",
+      margin: "8% auto",
+    },
+  },
 });
 
 export default function LocationsView(props) {

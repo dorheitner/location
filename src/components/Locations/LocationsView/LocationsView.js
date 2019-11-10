@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 import useReactRouter from "use-react-router";
+import Map from "../../UI/Map/Map";
 
 const useStyles = makeStyles({
   card: {
@@ -15,6 +16,12 @@ const useStyles = makeStyles({
   },
   title: {
     fontSize: 14,
+  },
+  "@media only screen and (max-width: 800px)": {
+    card: {
+      width: "100%",
+      margin: "8% auto",
+    },
   },
 });
 
@@ -41,8 +48,21 @@ export default function LocationsView(props) {
     }
   }, [location]);
 
+  var regex = /^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/g;
+  const includeMap =
+    locationDetails && locationDetails.coordinates.search(regex);
+  const coordinates = locationDetails && locationDetails.coordinates.split(",");
+
+  console.log(includeMap);
   return (
     <Card className={classes.card}>
+      {includeMap === 0 && (
+        <Map
+          lat={coordinates && coordinates[0]}
+          long={coordinates && coordinates[1]}
+        ></Map>
+      )}
+
       <CardContent>
         <Typography
           className={classes.title}
@@ -55,7 +75,6 @@ export default function LocationsView(props) {
         <Typography variant='h5' component='h2'>
           {locationDetails && locationDetails.name}
         </Typography>
-
         <Typography variant='body2' component='p'>
           Address: {locationDetails && locationDetails.address}
         </Typography>
@@ -66,6 +85,7 @@ export default function LocationsView(props) {
           Category: {locationDetails && locationDetails.category}
         </Typography>
       </CardContent>
+
       <CardActions>
         <Button
           onClick={history.goBack}

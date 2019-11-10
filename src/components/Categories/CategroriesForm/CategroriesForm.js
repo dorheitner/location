@@ -57,6 +57,12 @@ const mapDispathToProps = dispath => {
   };
 };
 
+const mapStateToProps = state => {
+  return {
+    categories: state.categories,
+  };
+};
+
 function CategoriesForm(props) {
   const classes = useStyles();
 
@@ -87,11 +93,9 @@ function CategoriesForm(props) {
       setCategoryId(categoryId);
 
       // Check If There Is Item With This Is
-      let categories = localStorage.getItem("categories");
-      _.isEmpty(categories) && history.push("/categories");
-      categories = JSON.parse(categories);
+      _.isEmpty(props.categories) && history.push("/categories");
 
-      let categoryObj = categories.filter(
+      let categoryObj = props.categories.filter(
         category => category.id === categoryId
       );
       _.isEmpty(categoryObj) && history.push("/categories");
@@ -103,7 +107,7 @@ function CategoriesForm(props) {
       document.querySelector("title").innerHTML = "Create Category";
       setEditMode(false);
     }
-  }, [location, history]);
+  }, [location, history, props.categories]);
 
   // Handle Submit for Create Or Edit
   const handleSubmit = event => {
@@ -166,6 +170,6 @@ function CategoriesForm(props) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispathToProps
 )(CategoriesForm);

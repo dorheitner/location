@@ -9,6 +9,11 @@ const useStyles = makeStyles(theme => ({
     width: "90%",
     marginLeft: 5,
   },
+  "@media only screen and (max-width: 800px)": {
+    root: {
+      width: "100%",
+    },
+  },
 }));
 
 const mapStateToProps = state => {
@@ -23,9 +28,14 @@ function createData(id, name) {
 }
 
 // List Column Titles
-const listHeaderTitles = {
-  name: "Category Name",
-};
+const listHeaderTitles = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "Category Name",
+  },
+];
 
 function CategoriesList(props) {
   const classes = useStyles();
@@ -46,9 +56,9 @@ function CategoriesList(props) {
     <>
       <div className={classes.root}>
         <List
+          type='categories'
           rows={rows}
           listHeaderTitles={listHeaderTitles}
-          type='categories'
         />
       </div>
     </>

@@ -12,6 +12,11 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
   },
+  "@media only screen and (max-width: 800px)": {
+    root: {
+      width: "100%",
+    },
+  },
 }));
 
 // Order Data For The List
@@ -20,12 +25,32 @@ function createData(id, name, address, coordinates, category) {
 }
 
 // List Column Titles
-const listHeaderTitles = {
-  name: "Laction Name",
-  address: "Address",
-  coordinates: "Coordinates",
-  category: "Category",
-};
+const listHeaderTitles = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: true,
+    label: "Laction Name",
+  },
+  {
+    id: "address",
+    numeric: false,
+    disablePadding: true,
+    label: "Address",
+  },
+  {
+    id: "coordinates",
+    numeric: false,
+    disablePadding: true,
+    label: "Coordinates",
+  },
+  {
+    id: "category",
+    numeric: false,
+    disablePadding: true,
+    label: "Category",
+  },
+];
 
 const mapStateToProps = state => {
   return {

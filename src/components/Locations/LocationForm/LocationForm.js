@@ -6,14 +6,21 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import NativeSelect from "@material-ui/core/NativeSelect";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Checkbox from "@material-ui/core/Checkbox";
+import ListItemText from "@material-ui/core/ListItemText";
+
+import Geocode from "react-geocode";
 
 import _ from "lodash";
 import { connect } from "react-redux";
 import * as actionTypes from "../../../store/actions";
 import useReactRouter from "use-react-router";
+Geocode.setApiKey("AIzaSyAV3gmAB7j1uedhlo83B1vWymbJrI9CD0Q");
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -60,6 +67,13 @@ const mapDispathToProps = dispath => {
   };
 };
 
+const mapStateToProps = state => {
+  return {
+    locations: state.locations,
+    categories: state.categories,
+  };
+};
+
 function LocationForm(props) {
   const classes = useStyles();
   const [values, setValues] = useState({
@@ -71,15 +85,31 @@ function LocationForm(props) {
   const [submit, setSumnit] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { history, location } = useReactRouter();
+  const [selected, setSelected] = useState([]);
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  const handleChange = event => {
+    setSelected(event.target.value);
+    setValues({ ...values, category: event.target.value });
+  };
 
   // Get Categories Itmes For The Select Input
-  const categories = [];
-  let categoriesList = localStorage.getItem("categories");
 
-  if (categoriesList) {
-    let categoriesItems = JSON.parse(categoriesList);
-    categoriesItems.forEach(category => {
-      categories.push([category.id, category.name]);
+  const names = [];
+
+  if (props.categories) {
+    props.categories.forEach(category => {
+      names.push(category.name);
     });
   }
 
@@ -93,17 +123,18 @@ function LocationForm(props) {
 
       // Get Location Id From URL
       let locationId = location.pathname.replace("/locations/edit/", "");
-      let locations = localStorage.getItem("locations");
-      _.isEmpty(locations) && history.push("/locations");
+      _.isEmpty(props.locations) && history.push("/locations");
 
       setEditMode(true);
-      locations = JSON.parse(locations);
+      //   locations = JSON.parse(locations);
 
-      let locationObj = locations.filter(
+      let locationObj = props.locations.filter(
         location => location.id === locationId
       );
       // Check If There Is Item With This Is
       _.isEmpty(locationObj) && history.push("/locations");
+
+      setSelected(locationObj[0].category);
       setValues(locationObj[0]);
     } else {
       // Create Mode
@@ -113,7 +144,7 @@ function LocationForm(props) {
       setValues({ name: "", address: "", coordinates: "", category: "" });
       setEditMode(false);
     }
-  }, [location, history]);
+  }, [location, history, props.locations]);
 
   // Handle Submit for Create Or Edit
   const handleSubmit = event => {
@@ -142,13 +173,13 @@ function LocationForm(props) {
 
     const check = Object.entries(values).map(([key, value]) => {
       let inputCheck = validInputs.includes(key);
-
       if (inputCheck) {
         if (value === "") {
           return key;
         }
         return true;
       }
+
       return true;
     });
 
@@ -157,7 +188,32 @@ function LocationForm(props) {
 
   //Handle Input Change
   const handleInputChange = event => {
-    setValues({ ...values, [event.target.name]: event.target.value });
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const setCoordinatesToForm = () => {
+    if (values.name !== "" && values.coordinates === "") {
+      Geocode.fromAddress(values.name).then(
+        response => {
+          const { lat, lng } = response.results[0].geometry.location;
+          console.log(lat, lng);
+
+          return setValues({
+            ...values,
+            coordinates: lat + "," + lng,
+          });
+        },
+        error => {
+          return setValues({
+            ...values,
+            coordinates: "",
+          });
+        }
+      );
+    }
   };
 
   return (
@@ -169,6 +225,7 @@ function LocationForm(props) {
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
+            onBlur={() => setCoordinatesToForm()}
             error={submit && values.name === ""}
             helperText={
               submit && values.name === "" ? `Please set location name` : " "
@@ -220,24 +277,26 @@ function LocationForm(props) {
             <InputLabel htmlFor='name-native-error'>
               {submit && values.category === "" ? "Please select category" : ""}
             </InputLabel>
-            <NativeSelect
-              inputProps={{
-                id:
-                  submit && values.category === ""
-                    ? "name-native-error"
-                    : "age-native-required",
-                name: "category",
-              }}
-              value={values && values.category ? values.category : ""}
-              onChange={handleInputChange}
+            <InputLabel id='demo-mutiple-checkbox-label'>
+              Select Categories
+            </InputLabel>
+            <Select
+              labelId='demo-mutiple-checkbox-label'
+              id='demo-mutiple-checkbox'
+              multiple
+              value={selected}
+              onChange={handleChange}
+              input={<Input />}
+              renderValue={selected => selected.join(", ")}
+              MenuProps={MenuProps}
             >
-              <option value={5}>Select Category *</option>
-              {categories.map(category => (
-                <option key={category[0]} value={category[1]}>
-                  {category[1]}
-                </option>
+              {names.map(name => (
+                <MenuItem key={name} value={name}>
+                  <Checkbox checked={selected.indexOf(name) > -1} />
+                  <ListItemText primary={name.toUpperCase()} />
+                </MenuItem>
               ))}
-            </NativeSelect>
+            </Select>
           </FormControl>
 
           <Button
@@ -256,6 +315,6 @@ function LocationForm(props) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispathToProps
 )(LocationForm);

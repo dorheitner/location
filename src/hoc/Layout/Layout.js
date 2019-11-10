@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Button from "@material-ui/core/Button";
 
 import useReactRouter from "use-react-router";
 
@@ -18,11 +19,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     margin: "3% 0",
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   title: {
-    flexGrow: 1,
+    flexGrow: 0.2,
+
     justifyContent: "flex-start",
     display: "flex",
   },
@@ -33,12 +32,14 @@ const useStyles = makeStyles(theme => ({
     textDecoration: "none",
     color: "#000",
   },
-  crudButtonsGrid: {
-    margin: "2% auto",
+  headerLinks: {
+    flexGrow: 2,
+    justifyContent: "flex-start",
+    display: "flex",
   },
-  button: {
-    margin: 5,
-    width: "100%",
+  headerLink: {
+    justifyContent: "flex-start",
+    display: "flex",
   },
   list: {
     width: "100%",
@@ -46,6 +47,17 @@ const useStyles = makeStyles(theme => ({
   paper: {
     // height: '100vh'
     width: "100%",
+  },
+  menu: {
+    display: "block",
+  },
+  "@media only screen and (max-width: 800px)": {
+    menu: {
+      display: "none",
+    },
+    root: {
+      margin: "8% auto",
+    },
   },
 }));
 
@@ -55,38 +67,50 @@ const links = [
     friendlyName: "Locations List",
     icon: "",
     address: "/locations",
+    type: "locations",
   },
   {
     name: "locationsForm",
     friendlyName: "Create Location",
     icon: "",
     address: "/locations/create",
+    type: "locations",
   },
   {
     name: "ctegories",
     friendlyName: "Categories List",
     icon: "",
     address: "/categories",
+    type: "categories",
   },
   {
     name: "ctegoriesForm",
     friendlyName: "Create Category",
     icon: "",
     address: "/categories/create",
+    type: "categories",
   },
 ];
 
 export default function Layout(props) {
   const classes = useStyles();
-  const { location } = useReactRouter();
-  const [action, setAction] = useState("Locations List");
+  const { location, history } = useReactRouter();
+  const [action, setAction] = useState();
+  const [menuType, setMenuType] = useState();
 
   useEffect(() => {
     const title = [];
 
+    location.pathname.startsWith("/locations")
+      ? setMenuType("locations")
+      : setMenuType("categories");
+
+    location.pathname === "/locations" && setAction("Locations List");
+    location.pathname === "/categories" && setAction("Categories List");
+
     title.push(document.querySelector("title").innerText);
     document.querySelector("#title").innerHTML = title;
-  }, [location]);
+  }, [location, menuType]);
 
   const changeAction = title => {
     setAction(title);
@@ -96,37 +120,56 @@ export default function Layout(props) {
       <AppBar style={{ width: "100%" }} position='fixed'>
         <Toolbar className={classes.toolbar}>
           <Typography variant='h6' className={classes.title} id='title' />
+          <div className={classes.headerLinks}>
+            <Button
+              className={classes.headerLink}
+              color='inherit'
+              onClick={() => history.push("/locations")}
+            >
+              Locations
+            </Button>
+            <Button
+              color='inherit'
+              className={classes.headerLink}
+              onClick={() => history.push("/categories")}
+            >
+              Categories
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
 
-      <Grid container spacing={2}>
-        <Grid item xs={2}>
+      <Grid container>
+        <Grid item xs={2} className={classes.menu}>
           <Paper className={classes.paper}>
             <List className={classes.list}>
-              {links.map((link, index) => (
-                <Link
-                  key={index}
-                  className={classes.linkes}
-                  to={link.address}
-                  onClick={() => changeAction(link.friendlyName)}
-                >
-                  <ListItem
-                    button
-                    key={index}
-                    style={
-                      action === link.friendlyName
-                        ? { background: "#247BA0", color: "#fff" }
-                        : {}
-                    }
-                  >
-                    <ListItemText primary={link.friendlyName} />
-                  </ListItem>
-                </Link>
-              ))}
+              {links.map(
+                (link, index) =>
+                  link.type === menuType && (
+                    <Link
+                      key={index}
+                      className={classes.linkes}
+                      to={link.address}
+                      onClick={() => changeAction(link.friendlyName)}
+                    >
+                      <ListItem
+                        button
+                        key={index}
+                        style={
+                          action === link.friendlyName
+                            ? { background: "#247BA0", color: "#fff" }
+                            : {}
+                        }
+                      >
+                        <ListItemText primary={link.friendlyName} />
+                      </ListItem>
+                    </Link>
+                  )
+              )}
             </List>
           </Paper>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={window.innerWidth > 800 ? 10 : 12}>
           <div>{props.children}</div>
         </Grid>
       </Grid>
