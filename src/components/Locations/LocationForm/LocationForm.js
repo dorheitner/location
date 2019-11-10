@@ -13,7 +13,6 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
-
 import Geocode from "react-geocode";
 
 import _ from "lodash";
@@ -76,6 +75,7 @@ const mapStateToProps = state => {
 
 function LocationForm(props) {
   const classes = useStyles();
+
   const [values, setValues] = useState({
     name: "",
     address: "",
@@ -199,7 +199,6 @@ function LocationForm(props) {
       Geocode.fromAddress(values.name).then(
         response => {
           const { lat, lng } = response.results[0].geometry.location;
-          console.log(lat, lng);
 
           return setValues({
             ...values,
@@ -218,7 +217,7 @@ function LocationForm(props) {
 
   return (
     <Container component='main' maxWidth='xs'>
-      <CssBaseline />
+      <CssBaseline />\{" "}
       <div className={classes.paper}>
         <Typography component='h1' variant='h5'>
           {editMode ? "Edit Location" : "Create New Location"}

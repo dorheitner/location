@@ -48,12 +48,12 @@ export default function LocationsView(props) {
     }
   }, [location]);
 
+  //Check if coordinates is valide
   var regex = /^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/g;
   const includeMap =
     locationDetails && locationDetails.coordinates.search(regex);
   const coordinates = locationDetails && locationDetails.coordinates.split(",");
 
-  console.log(includeMap);
   return (
     <Card className={classes.card}>
       {includeMap === 0 && (

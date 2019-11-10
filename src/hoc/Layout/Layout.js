@@ -169,7 +169,7 @@ export default function Layout(props) {
             </List>
           </Paper>
         </Grid>
-        <Grid item xs={window.innerWidth > 800 ? 10 : 12}>
+        <Grid item xs={12} md={10}>
           <div>{props.children}</div>
         </Grid>
       </Grid>

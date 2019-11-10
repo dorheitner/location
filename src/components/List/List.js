@@ -139,7 +139,9 @@ function List(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [enableActions, setEnableActions] = useState(false);
-  const [linksForActionButtons, setLinksForActionButtons] = useState(false);
+  const [linksForActionButtons, setLinksForActionButtons] = useState({
+    create: `/${props.type}/create`,
+  });
   const [currentRows, setCurrentRows] = useState([]);
   const [category, setCategory] = useState();
   const [buttonFilterColor, setButtonFilterColor] = useState("default");
@@ -161,7 +163,6 @@ function List(props) {
     setSelected(id);
     setEnableActions(true);
     setLinksForActionButtons({
-      create: `/${props.type}/create`,
       edit: `/${props.type}/edit/${id}`,
       view: `/${props.type}/view/${id}`,
       delete: {
@@ -181,7 +182,7 @@ function List(props) {
     if (!_.isEmpty(category)) {
       setButtonFilterColor("primary");
       let filterRows = props.rows.filter(item => {
-        return item["category"].includes(category);
+        return item["category"] ? item["category"].includes(category) : null;
       });
       setCurrentRows(filterRows);
     } else {
@@ -225,7 +226,6 @@ function List(props) {
             selectedItems={handleSelectedCategory}
             label='Category'
           />
-
           <Button
             onClick={() => handleFilterByCategories()}
             color={buttonFilterColor}
@@ -257,7 +257,6 @@ function List(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 const isItemSelected = isSelected(row.name);
-                //  const labelId = `enhanced-table-checkbox-${index}`;
                 return (
                   <TableRow
                     hover
@@ -304,7 +303,7 @@ function List(props) {
         </Table>
         {_.isEmpty(rows.current) && (
           <Typography className={classes.empty} variant='h5' gutterBottom>
-            Still Don't have any {props.type}
+            Sorry, We Don't find any result.
           </Typography>
         )}
       </div>

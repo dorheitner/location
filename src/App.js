@@ -2,7 +2,8 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NotFound from "./hoc/NotFound/NotFound";
-
+import ErrorHandler from "./hoc/ErrorHandler/ErrorHandler";
+import { connect } from "react-redux";
 import Layout from "./hoc/Layout/Layout";
 import {
   LocationsList,
@@ -15,10 +16,11 @@ import {
   CategoriesView,
 } from "./components/Categories";
 
-function App() {
+function App(errors) {
   return (
     <div className='App'>
       <Router>
+        {errors && <ErrorHandler error={errors} />}
         <Layout>
           <Switch>
             <Route exact path='/' component={LocationsList} name='list' />
@@ -51,4 +53,9 @@ function App() {
   );
 }
 
-export default App;
+//export default App;
+
+// Hook up App to be a container (react-redux)
+export default connect(state => ({
+  errors: state.errors,
+}))(App);

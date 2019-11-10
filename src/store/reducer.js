@@ -4,6 +4,7 @@ import _ from "lodash";
 const initialState = {
   categories: JSON.parse(localStorage.getItem("categories")),
   locations: JSON.parse(localStorage.getItem("locations")),
+  errors: null,
 };
 
 const reducer = (state = initialState, action) => {

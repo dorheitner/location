@@ -25,7 +25,7 @@ const ViewMap = compose(
   withGoogleMap
 )(props => (
   <GoogleMap
-    defaultZoom={8}
+    defaultZoom={10}
     defaultCenter={{ lat: parseInt(props.lat), lng: parseInt(props.long) }}
   >
     {props.isMarkerShown && (

@@ -80,6 +80,7 @@ function Actions(props) {
   return (
     <div className={classes.crudButtonsGrid}>
       <Button
+        disabled={props.enableActions}
         variant='contained'
         style={{ background: "#FFC300" }}
         className={(classes.button, classes.createButton)}
